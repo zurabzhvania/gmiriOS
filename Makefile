@@ -3,7 +3,7 @@ CC = i686-elf-gcc
 CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Isrc/include
 LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
 
-ASM_SRCS = src/boot.s src/cpu/gdt_flush.s src/cpu/exceptions.s
+ASM_SRCS = src/boot.s src/cpu/gdt_flush.s src/cpu/exceptions.s src/cpu/irq.s
 C_SRCS = src/kernel.c src/drivers/vga.c src/lib/stdio.c src/cpu/gdt.c src/cpu/idt.c
 OBJS = $(patsubst src/%.s,build/%.o,$(ASM_SRCS)) $(patsubst src/%.c,build/%.o,$(C_SRCS))
 TARGET = build/myos.bin

@@ -3,14 +3,28 @@
 #include "gdt.h"
 #include "idt.h"
 
+static volatile uint32_t timer_ticks = 0;
+
+static void timer_callback(struct cpu_registers* regs) {
+	(void)regs;
+	timer_ticks++;
+	if (timer_ticks == 1) {
+		kprintf("IRQ0 timer tick received from hardware!\n");
+	}
+}
+
 void kernel_main(void) {
 	terminal_initialize();
 	gdt_initialize();
 	idt_initialize();
 
-	kprintf("gmiriOS v0.4 initialized.\n");
-	kprintf("GDT and IDT loaded.\n");
+	irq_install_handler(0, timer_callback);
+	__asm__ volatile ("sti");
 
-	/* Trigger software breakpoint (Vector 3) to verify exception handling */
-	__asm__ volatile ("int $0x03");
+	kprintf("gmiriOS v0.5 initialized.\n");
+	kprintf("Hardware interrupts enabled.\n");
+
+	for (;;) {
+		__asm__ volatile ("hlt");
+	}
 }
